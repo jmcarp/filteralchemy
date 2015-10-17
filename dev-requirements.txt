@@ -1,0 +1,13 @@
+# Build tasks
+invoke
+
+# Testing
+mock
+pytest>=2.7.3
+pytest-cov
+tox>=1.5.0
+flake8
+Flask
+
+# Packaging
+wheel

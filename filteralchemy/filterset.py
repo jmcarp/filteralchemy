@@ -34,22 +34,25 @@ class FilterSetMeta(type):
         )
         return klass
 
-    def get_declared_filters(attrs):
+    @classmethod
+    def get_declared_filters(mcs, attrs):
         return [
             (key, attrs.pop(key))
             for key, value in list(attrs.items())
             if isinstance(value, Filter)
         ]
 
-    def get_inherited_filters(mcs):
+    @classmethod
+    def get_inherited_filters(mcs, klass):
         return [
             (key, value)
-            for parent in mcs.mro()[:0:-1]
+            for parent in klass.mro()[:0:-1]
             for key, value in getattr(parent, 'filters', parent.__dict__).items()
             if isinstance(value, Filter)
         ]
 
-    def get_model_filters(klass):
+    @classmethod
+    def get_model_filters(mcs, klass):
         opts = klass.opts
         if not opts.model:
             return []
