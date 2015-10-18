@@ -62,9 +62,17 @@ class FilterSetMeta(type):
             for operator in opts.operators:
                 name = underscore_formatter(prop.key, operator)
                 label = opts.formatter(prop.key, operator)
-                filter_ = Filter(prop.key, field, label=label, operator=operator)
+                filter_ = mcs.make_filter(prop, field, label, operator, klass)
                 filters.append((name, filter_))
         return filters
+
+    @classmethod
+    def make_filter(mcs, prop, field, label, operator, klass):
+        opts = klass.opts
+        if operator.multiple:
+            field = opts.list_class(field)
+        filter_ = Filter(prop.key, field, label=label, operator=operator)
+        return filter_
 
 class FilterSet(six.with_metaclass(FilterSetMeta, object)):
 

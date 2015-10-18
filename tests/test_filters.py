@@ -54,6 +54,7 @@ class TestFilters:
             class Meta:
                 model = models.Album
                 query = session.query(models.Album)
+                operators = (operators.Equal, operators.In)
                 parser = parser
             name__like = Filter('name', fields.Str(), operator=operators.Like)
         return ModelFilterSet
@@ -93,6 +94,11 @@ class TestFilters:
             query = ModelFilterSet().filter()
             assert query.count() == 1
             assert query.first() == albums[1]
+
+    def test_filter_in(self, app, albums, session, ModelFilterSet):
+        with app.test_request_context('/?sales__in=12000000&sales__in=5000000'):
+            query = ModelFilterSet().filter()
+            assert set(query.all()) == set(albums)
 
     def test_custom_filter(self, app, albums, session, ModelFilterSet):
         with app.test_request_context('/?name__like=%Night%'):
