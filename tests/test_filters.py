@@ -7,40 +7,10 @@ import pytest
 from webargs import fields
 from webargs.flaskparser import parser
 
-import sqlalchemy as sa
-from sqlalchemy.ext.declarative import declarative_base
-
 from filteralchemy import operators
 from filteralchemy import formatters
 from filteralchemy.filters import Filter
 from filteralchemy.filterset import FilterSet
-
-class Bunch(object):
-    def __init__(self, **kwargs):
-        self.__dict__.update(**kwargs)
-
-@pytest.fixture
-def Base():
-    return declarative_base()
-
-@pytest.fixture
-def session(Base):
-    engine = sa.create_engine('sqlite:///:memory:')
-    Session = sa.orm.sessionmaker(bind=engine)
-    Base.metadata.create_all(bind=engine)
-    return Session()
-
-@pytest.fixture
-def models(Base):
-    class Album(Base):
-        __tablename__ = 'album'
-        id = sa.Column(sa.Integer, primary_key=True)
-
-        name = sa.Column(sa.String)
-        genre = sa.Column(sa.String)
-        sales = sa.Column(sa.Float)
-        date = sa.Column(sa.Date)
-    return Bunch(Album=Album)
 
 @pytest.fixture
 def app():

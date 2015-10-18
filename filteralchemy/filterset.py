@@ -56,8 +56,15 @@ class FilterSetMeta(type):
         opts = klass.opts
         if not opts.model:
             return []
+        properties = list(opts.model.__mapper__.iterate_properties)
+        keys = set(
+            opts.fields or
+            [prop.key for prop in properties]
+        ).difference(opts.exclude)
         filters = []
-        for prop in opts.model.__mapper__.iterate_properties:
+        for prop in properties:
+            if prop.key not in keys:
+                continue
             field = opts.converter.field_for(opts.model, prop.key)
             for operator in opts.operators:
                 name = underscore_formatter(prop.key, operator)
