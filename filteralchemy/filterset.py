@@ -20,6 +20,7 @@ class FilterSetOptions(object):
         self.operators = getattr(meta, 'operators', (operators.Equal, ))
         self.default_operator = getattr(meta, 'default_operator', operators.Equal)
         self.formatter = getattr(meta, 'formatter', underscore_formatter)
+        self.column_overrides = getattr(meta, 'column_overrides', {})
         self.parser = getattr(meta, 'parser', None)
 
 class FilterSetMeta(type):
@@ -66,8 +67,13 @@ class FilterSetMeta(type):
         for prop in properties:
             if prop.key not in keys:
                 continue
-            field = opts.converter.field_for(opts.model, prop.key)
-            for operator in opts.operators:
+            overrides = opts.column_overrides.get(prop.key, {})
+            field = (
+                overrides.get('field') or
+                opts.converter.field_for(opts.model, prop.key)
+            )
+            operators = overrides.get('operators') or opts.operators
+            for operator in operators:
                 name = underscore_formatter(prop.key, operator.label)
                 operator_name = (
                     operator.label

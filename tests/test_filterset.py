@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+from webargs import fields
+
 from filteralchemy import operators
 from filteralchemy.filterset import FilterSet
 
@@ -41,3 +43,22 @@ class TestFilterSet:
                 model = models.Album
                 exclude = ('sales', 'date')
         assert {'id', 'name', 'genre'} == get_labels(ModelFilterSet)
+
+    def test_column_override_operators(self, models):
+        class ModelFilterSet(FilterSet):
+            class Meta:
+                model = models.Album
+                column_overrides = {
+                    'name': {'operators': [operators.Equal, operators.In]},
+                }
+        expected = set(models.Album.__mapper__.columns.keys()).union({'name__in'})
+        assert expected == get_labels(ModelFilterSet)
+
+    def test_column_override_fields(self, models):
+        class ModelFilterSet(FilterSet):
+            class Meta:
+                model = models.Album
+                column_overrides = {
+                    'sales': {'field': fields.Float()},
+                }
+        assert isinstance(ModelFilterSet.filters['sales__eq'].field, fields.Float)
