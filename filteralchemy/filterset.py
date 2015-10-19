@@ -18,6 +18,7 @@ class FilterSetOptions(object):
         self.list_class = getattr(meta, 'list_class', fields.List)
         self.converter = getattr(meta, 'converter', ModelConverter())
         self.operators = getattr(meta, 'operators', (operators.Equal, ))
+        self.default_operator = getattr(meta, 'default_operator', operators.Equal)
         self.formatter = getattr(meta, 'formatter', underscore_formatter)
         self.parser = getattr(meta, 'parser', None)
 
@@ -67,8 +68,13 @@ class FilterSetMeta(type):
                 continue
             field = opts.converter.field_for(opts.model, prop.key)
             for operator in opts.operators:
-                name = underscore_formatter(prop.key, operator)
-                label = opts.formatter(prop.key, operator)
+                name = underscore_formatter(prop.key, operator.label)
+                operator_name = (
+                    operator.label
+                    if operator != opts.default_operator
+                    else None
+                )
+                label = opts.formatter(prop.key, operator_name)
                 filter_ = mcs.make_filter(prop, field, label, operator, klass)
                 filters.append((name, filter_))
         return filters

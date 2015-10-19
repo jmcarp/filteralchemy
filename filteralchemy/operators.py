@@ -18,6 +18,7 @@ class LookupOperator(Operator):
 
 class Equal(LookupOperator):
     lookup = '__eq__'
+    label = 'eq'
 
 class NotEqual(LookupOperator):
     lookup = '__ne__'
