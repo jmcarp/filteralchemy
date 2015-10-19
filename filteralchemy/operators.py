@@ -2,53 +2,48 @@
 
 class Operator(object):
 
-    def filter(self, query, value):
-        pass
-
-class LookupOperator(Operator):
-
     lookup = None
     label = None
     multiple = False
 
-    def filter(self, query, model, attr, value):
+    def __call__(self, query, model, attr, value):
         column = getattr(model, attr)
         condition = getattr(column, self.lookup)(value)
         return query.filter(condition)
 
-class Equal(LookupOperator):
+class Equal(Operator):
     lookup = '__eq__'
     label = 'eq'
 
-class NotEqual(LookupOperator):
+class NotEqual(Operator):
     lookup = '__ne__'
     label = 'ne'
 
-class GreaterThan(LookupOperator):
+class GreaterThan(Operator):
     lookup = '__gt__'
     label = 'gt'
 
-class GreaterEqual(LookupOperator):
+class GreaterEqual(Operator):
     lookup = '__ge__'
     label = 'ge'
 
-class LessThan(LookupOperator):
+class LessThan(Operator):
     lookup = '__lt__'
     label = 'lt'
 
-class LessEqual(LookupOperator):
+class LessEqual(Operator):
     lookup = '__le__'
     label = 'le'
 
-class Like(LookupOperator):
+class Like(Operator):
     lookup = 'like'
     label = 'like'
 
-class ILike(LookupOperator):
+class ILike(Operator):
     lookup = 'ilike'
     label = 'ilike'
 
-class In(LookupOperator):
+class In(Operator):
     lookup = 'in_'
     label = 'in'
     multiple = True

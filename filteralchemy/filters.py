@@ -11,4 +11,5 @@ class Filter(object):
         self.operator = operator
 
     def filter(self, query, model, value):
-        return self.operator().filter(query, model, self.attr, value)
+        operator = self.operator() if isinstance(self.operator, type) else self.operator
+        return operator(query, model, self.attr, value)
