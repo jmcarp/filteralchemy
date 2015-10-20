@@ -3,7 +3,13 @@
 from filteralchemy import operators
 
 class Filter(object):
+    """Base filter.
 
+    :param str attr: Model attribute name
+    :param Field field: Field to deserialize filter parameter
+    :param str label: Lookup key on input dictionary
+    :param operator: Operator or filter callable
+    """
     def __init__(self, attr=None, field=None, label=None, operator=operators.Equal):
         self.attr = attr
         self.field = field
