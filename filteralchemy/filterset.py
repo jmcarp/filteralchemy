@@ -4,8 +4,7 @@ import six
 from marshmallow import fields
 from marshmallow_sqlalchemy import ModelConverter
 
-from filteralchemy import operators
-from filteralchemy.filters import Filter
+from filteralchemy import Filter, operators
 from filteralchemy.formatters import underscore_formatter
 
 class FilterSetOptions(object):

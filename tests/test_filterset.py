@@ -2,8 +2,7 @@
 
 from webargs import fields
 
-from filteralchemy import operators
-from filteralchemy.filterset import FilterSet
+from filteralchemy import FilterSet, operators
 
 def get_labels(klass):
     return set(filter_.label for filter_ in klass.filters.values())

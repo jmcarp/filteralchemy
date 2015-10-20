@@ -9,8 +9,7 @@ from webargs.flaskparser import parser
 
 from filteralchemy import operators
 from filteralchemy import formatters
-from filteralchemy.filters import Filter
-from filteralchemy.filterset import FilterSet
+from filteralchemy import Filter, FilterSet
 
 @pytest.fixture
 def app():

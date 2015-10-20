@@ -29,6 +29,7 @@ Quickstart
 
 .. code-block:: python
 
+    import flask
     from models import Album, session
     from webargs.flaskparser import parser
     from filteralchemy import FilterSet
