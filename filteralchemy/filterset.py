@@ -109,9 +109,12 @@ class FilterSet(six.with_metaclass(FilterSetMeta, object)):
                 query = session.query(Album)
                 parser = parser
 
-        query = AlbumFilterSet.filter()
+        query = AlbumFilterSet().filter()
 
+    :param query: Optional SQLAlchemy query; if not provided, use query
+        defined on options class
     """
+
     class Meta:
         """
         Available options:
@@ -132,13 +135,20 @@ class FilterSet(six.with_metaclass(FilterSetMeta, object)):
         """
         pass
 
+    def __init__(self, query=None):
+        self.query = query
+
     def filter(self):
+        """Generate a filtered query from request parameters.
+
+        :returns: Filtered SQLALchemy query
+        """
         argmap = {
             filter.label or label: filter.field
             for label, filter in self.filters.items()
         }
         args = self.opts.parser.parse(argmap)
-        query = self.opts.query
+        query = self.query if self.query is not None else self.opts.query
         for label, filter in self.filters.items():
             value = args.get(filter.label or label)
             if value is not None:

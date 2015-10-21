@@ -84,6 +84,13 @@ class TestFilters:
             assert query.count() == 1
             assert query.first() == albums[0]
 
+    def test_override_query(self, app, models, albums, session, ModelFilterSet):
+        with app.test_request_context('/?sales__in=5000000&sales__in=12000000'):
+            query = session.query(models.Album).filter(models.Album.name == 'The Works')
+            query = ModelFilterSet(query).filter()
+            assert query.count() == 1
+            assert query.first() == albums[1]
+
     def test_custom_formatter(self, app, albums, models, session):
         class ModelFilterSet(FilterSet):
             class Meta:

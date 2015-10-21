@@ -22,7 +22,7 @@ Use **filteralchemy** to auto-generate filters based on a SQLAlchemy model:
 
     @app.route('/albums')
     def get_albums():
-        query = AlbumFilterSet.filter()
+        query = AlbumFilterSet().filter()
         return flask.jsonify(query.all())
 
 Customizing operators
