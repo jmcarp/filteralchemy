@@ -117,17 +117,17 @@ class FilterSet(six.with_metaclass(FilterSetMeta, object)):
         Available options:
 
         - `model`: SQLAlchemy model class
-        - `query`: Query on ``model``
+        - `query`: Query on `model`
         - `fields`: Tuple or list of model field names to include
         - `exclude`: Tuple or list of model field names to exclude
         - `list_class`: List field class; defaults to `List`
         - `converter`: `ModelConverter` instance; defaults to `ModelConverter()`
         - `operators`: Tuple or list of `Operator` classes
         - `default_operator`: Default operator; non-default operators will include
-            operator labels in auto-generated filter names
+          operator labels in auto-generated filter names
         - `formatter`: Callable for building names of auto-generated filters
         - `column_overrides`: Dictionary mapping column names to operator and
-            field overrides
+          field overrides
         - `parser`: Webargs request parser
         """
         pass
