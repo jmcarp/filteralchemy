@@ -47,7 +47,7 @@ Quickstart
 
     @app.route('/albums')
     def get_albums():
-        query = AlbumFilterSet.filter()
+        query = AlbumFilterSet().filter()
         return flask.jsonify(query.all())
 
 .. _marshmallow-sqlalchemy: https://marshmallow-sqlalchemy.readthedocs.org/

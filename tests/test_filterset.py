@@ -60,4 +60,4 @@ class TestFilterSet:
                 column_overrides = {
                     'sales': {'field': fields.Float()},
                 }
-        assert isinstance(ModelFilterSet.filters['sales__eq'].field, fields.Float)
+        assert isinstance(ModelFilterSet.filters['sales'].field, fields.Float)

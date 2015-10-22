@@ -57,8 +57,8 @@ Individual filters can also be declared manually as class variables:
             model = Album
             query = session.query(Album)
             parser = parser
-        name__like = Filter('name', fields.Str(), operator=ILike)
-        genre__in = Filter('genre', fields.List(fields.Str), operator=In)
+        name = Filter(fields.Str(), operator=ILike)
+        genre = Filter(fields.List(fields.Str), operator=In)
 
 Customizing query format
 ------------------------

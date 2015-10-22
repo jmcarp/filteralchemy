@@ -29,9 +29,9 @@ class FilterSetMeta(type):
         klass = super(FilterSetMeta, mcs).__new__(mcs, name, bases, attrs)
         klass.opts = FilterSetOptions(getattr(klass, 'Meta'))
         klass.filters = dict(
-            declared_fields +
+            mcs.get_model_filters(klass) +
             mcs.get_inherited_filters(klass) +
-            mcs.get_model_filters(klass)
+            declared_fields
         )
         return klass
 
@@ -73,12 +73,12 @@ class FilterSetMeta(type):
             )
             operators = overrides.get('operators') or opts.operators
             for operator in operators:
-                name = underscore_formatter(prop.key, operator.label)
                 operator_name = (
                     operator.label
                     if operator != opts.default_operator
                     else None
                 )
+                name = underscore_formatter(prop.key, operator_name)
                 label = opts.formatter(prop.key, operator_name)
                 filter_ = mcs.make_filter(prop, field, label, operator, klass)
                 filters.append((name, filter_))
@@ -89,8 +89,7 @@ class FilterSetMeta(type):
         opts = klass.opts
         if operator.multiple:
             field = opts.list_class(field)
-        filter_ = Filter(prop.key, field, label=label, operator=operator)
-        return filter_
+        return Filter(field, prop.key, label=label, operator=operator)
 
 class FilterSet(six.with_metaclass(FilterSetMeta, object)):
     """
@@ -152,5 +151,5 @@ class FilterSet(six.with_metaclass(FilterSetMeta, object)):
         for label, filter in self.filters.items():
             value = args.get(filter.label or label)
             if value is not None:
-                query = filter.filter(query, self.opts.model, value)
+                query = filter.filter(query, self.opts.model, label, value)
         return query

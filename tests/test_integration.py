@@ -27,8 +27,8 @@ class TestFilters:
                 query = session.query(models.Album)
                 operators = (operators.Equal, operators.In)
                 parser = parser
-            name__like = Filter('name', fields.Str(), operator=operators.Like)
-            sales__modulo = Filter(field=fields.Str(), operator=modulo)
+            genre = Filter(fields.Str(), operator=operators.Like)
+            sales__modulo = Filter(fields.Str(), operator=modulo)
         return ModelFilterSet
 
     @pytest.fixture
@@ -38,11 +38,13 @@ class TestFilters:
                 name='A Night at the Opera',
                 date=datetime.date(1975, 11, 21),
                 sales=12000000,
+                genre='rock',
             ),
             models.Album(
                 name='The Works',
                 date=datetime.date(1984, 2, 27),
                 sales=5000000,
+                genre='synth',
             ),
         ]
         for album in albums:
@@ -73,10 +75,10 @@ class TestFilters:
             assert set(query.all()) == set(albums)
 
     def test_declared_filter(self, app, albums, session, ModelFilterSet):
-        with app.test_request_context('/?name__like=%Night%'):
+        with app.test_request_context('/?genre=syn%'):
             query = ModelFilterSet().filter()
             assert query.count() == 1
-            assert query.first() == albums[0]
+            assert query.first() == albums[1]
 
     def test_custom_filter(self, app, albums, session, ModelFilterSet):
         with app.test_request_context('/?sales__modulo=3000000'):
