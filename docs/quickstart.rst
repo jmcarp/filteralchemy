@@ -30,6 +30,8 @@ Customizing operators
 
 By default, **filteralchemy** generates filters using the `Equal` operator. To generate filters with different operators, set the `operators` and `column_overrides` options in `Meta`:
 
+.. code-block:: python
+
     from filteralchemy.operators import Greater, Less, Like
 
     class AlbumFilterSet(FilterSet):
