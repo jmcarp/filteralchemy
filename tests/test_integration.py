@@ -18,7 +18,7 @@ def app():
 class TestFilters:
 
     @pytest.fixture
-    def ModelFilterSet(self, session, models):
+    def ModelFilterSet(self, session, engine, models):
         def modulo(query, model, attr, value):
             return query.filter(model.sales % value == 0)
         class ModelFilterSet(FilterSet):

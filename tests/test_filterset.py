@@ -2,6 +2,7 @@
 
 from webargs import fields
 
+from filteralchemy.utils import index_columns
 from filteralchemy import FilterSet, operators
 
 def get_labels(klass):
@@ -34,6 +35,13 @@ class TestFilterSet:
             class Meta:
                 model = models.Album
                 fields = ('id', 'name', 'genre')
+        assert {'id', 'name', 'genre'} == get_labels(ModelFilterSet)
+
+    def test_fields_callable(self, engine, models, session):
+        class ModelFilterSet(FilterSet):
+            class Meta:
+                model = models.Album
+                fields = index_columns(engine)
         assert {'id', 'name', 'genre'} == get_labels(ModelFilterSet)
 
     def test_exclude(self, models):

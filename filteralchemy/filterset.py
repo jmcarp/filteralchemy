@@ -7,6 +7,9 @@ from marshmallow_sqlalchemy import ModelConverter
 from filteralchemy import Filter, operators
 from filteralchemy.formatters import underscore_formatter
 
+def call_or_value(value, *args, **kwargs):
+    return value(*args, **kwargs) if callable(value) else value
+
 class FilterSetOptions(object):
 
     def __init__(self, meta):
@@ -58,10 +61,12 @@ class FilterSetMeta(type):
         if not opts.model:
             return []
         properties = list(opts.model.__mapper__.iterate_properties)
+        fields = call_or_value(opts.fields, klass=klass)
+        exclude = call_or_value(opts.exclude, klass=klass)
         keys = set(
-            opts.fields or
+            fields or
             [prop.key for prop in properties]
-        ).difference(opts.exclude)
+        ).difference(exclude)
         filters = []
         for prop in properties:
             if prop.key not in keys:
@@ -120,8 +125,10 @@ class FilterSet(six.with_metaclass(FilterSetMeta, object)):
 
         - `model`: SQLAlchemy model class
         - `query`: Query on `model`
-        - `fields`: Tuple or list of model field names to include
-        - `exclude`: Tuple or list of model field names to exclude
+        - `fields`: Sequence of model field names to include, or a callable that
+        accepts a `FilterSet` subclass and returns a sequence of fields
+        - `exclude`: Tuple or list of model field names to exclude, or a callable
+        that accepts a `FilterSet` subclass and returns a sequence of fields
         - `list_class`: List field class; defaults to `List`
         - `converter`: `ModelConverter` instance; defaults to `ModelConverter()`
         - `operators`: Tuple or list of `Operator` classes

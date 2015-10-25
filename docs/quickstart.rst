@@ -43,6 +43,31 @@ By default, **filteralchemy** generates filters using the `Equal` operator. To g
                 'name': {'operators': (Equal, Like)}
             }
 
+Restricting filtered columns
+----------------------------
+
+By default, all columns in the specified model are used to generate filters. To restrict filtered columns, set the `fields` or `exclude` options in Meta:
+
+.. code-block:: python
+
+    class AlbumFilterSet(FilterSet):
+        class Meta:
+            model = Album
+            query = session.query(Album)
+            fields = ('name', 'genre')
+
+Both `fields` and `exclude` can either be a sequence of column names or a callable that receives the `FilterSet` subclass and returns a sequence of names. **filteralchemy** provides a helper, `index_columns`, that restricts fields to indexed columns:
+
+.. code-block:: python
+
+    from filteralchemy.utils import index_columns
+
+    class AlbumFilterSet(FilterSet):
+        class Meta:
+            model = Album
+            query = session.query(Album)
+            fields = index_columns(engine)
+
 Declaring fields manually
 -------------------------
 

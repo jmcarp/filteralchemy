@@ -14,8 +14,11 @@ def Base():
     return declarative_base()
 
 @pytest.fixture
-def session(Base):
-    engine = sa.create_engine('sqlite:///:memory:')
+def engine():
+    return sa.create_engine('sqlite:///:memory:')
+
+@pytest.fixture
+def session(Base, engine):
     Session = sa.orm.sessionmaker(bind=engine)
     Base.metadata.create_all(bind=engine)
     return Session()
@@ -24,10 +27,10 @@ def session(Base):
 def models(Base):
     class Album(Base):
         __tablename__ = 'album'
-        id = sa.Column(sa.Integer, primary_key=True)
+        id = sa.Column(sa.Integer, primary_key=True, index=True)
 
-        name = sa.Column(sa.String)
-        genre = sa.Column(sa.String)
+        name = sa.Column(sa.String, index=True)
+        genre = sa.Column(sa.String, index=True)
         sales = sa.Column(sa.Float)
         date = sa.Column(sa.Date)
     return Bunch(Album=Album)
