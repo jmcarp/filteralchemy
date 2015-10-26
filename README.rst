@@ -18,7 +18,9 @@ filteralchemy
     :target: https://codecov.io/github/jmcarp/filteralchemy
     :alt: Code coverage
 
-**filteralchemy** is a declarative query builder for SQLAlchemy. **filteralchemy** uses marshmallow-sqlalchemy_ to auto-generate filter fields and webargs_ to parse field parameters from the request.
+**filteralchemy** is a declarative query builder for SQLAlchemy. **filteralchemy** uses marshmallow-sqlalchemy_ to auto-generate filter fields and webargs_ to parse field parameters from the request. Use it to filter data with minimal boilerplate.
+
+For Django users: the design of **filteralchemy** is strongly inspired by django-filter_.
 
 Install
 -------
@@ -35,12 +37,15 @@ Quickstart
     import flask
     from models import Album, session
     from webargs.flaskparser import parser
+
     from filteralchemy import FilterSet
+    from filteralchemy.operators import Equal, Less, Greater
 
     class AlbumFilterSet(FilterSet):
         class Meta:
             model = Album
             query = session.query(Album)
+            operators = (Equal, Less, Greater)
             parser = parser
 
     app = flask.Flask(__name__)
@@ -50,5 +55,10 @@ Quickstart
         query = AlbumFilterSet().filter()
         return flask.jsonify(query.all())
 
+.. code-block::
+
+    http :5000/albums artist==Queen genre==rock sales__gt==1000000
+
 .. _marshmallow-sqlalchemy: https://marshmallow-sqlalchemy.readthedocs.org/
 .. _webargs: https://webargs.readthedocs.org/
+.. _django-filter: https://github.com/alex/django-filter
